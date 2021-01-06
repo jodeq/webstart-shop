@@ -1,6 +1,12 @@
 # webstart-shop
 Boutique Symfony
 
+## Installation
+Après le clone lancez les commandes suivantes :
+
+* docker-compose run --no-deps --rm php composer install
+* docker-compose run --no-deps --rm node yarn install
+
 
 ## Liste des commandes
 composer require twig

@@ -17,4 +17,28 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+    /**
+     * @Route("/cgv", name="cgv")
+     */
+    public function cgv(): Response
+    {
+        return $this->render('home/cgv.html.twig', []);
+    }
+
+    /**
+     * @Route("/admin", name="admin")
+     */
+    public function admin(): Response
+    {
+        return new Response("OK");
+    }
+
+    /**
+     * @Route("/profile", name="profile")
+     */
+    public function profile(): Response
+    {
+        return new Response("OK");
+    }
 }
