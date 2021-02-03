@@ -38,6 +38,28 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /**
+             * @var File $imageFile
+             */
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile) {
+                $slugger = new AsciiSlugger();
+                // Génération du nouveau nom de fichier
+                $safeFilename = $slugger->slug($product->getName()) . "." . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('product_images_directory'),
+                        $safeFilename
+                    );
+                } catch (Exception $e) {
+                    // handle exceptions
+                }
+
+                $product->setImage($safeFilename);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
