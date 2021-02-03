@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Product;
+use App\Form\AddToCartType;
 use App\Form\ProductType;
+use App\Manager\CartManager;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,13 +15,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-/**
- * @Route("/admin/product")
- */
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/", name="product_index", methods={"GET"})
+     * @Route("/admin/product", name="product_index", methods={"GET"})
      */
     public function index(ProductRepository $productRepository): Response
     {
@@ -29,7 +28,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="product_new", methods={"GET","POST"})
+     * @Route("/admin/product/new", name="product_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
@@ -74,17 +73,46 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="product_show", methods={"GET"})
+     * @Route("/admin/product/{id}", name="product_show", methods={"GET"})
      */
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
-            'product' => $product,
+            'product' => $product
         ]);
     }
 
     /**
-     * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"})
+     * @Route("/product/{id}", name="product_detail", methods={"GET", "POST"})
+     */
+    public function detail(Product $product, Request $request, CartManager $cartManager): Response
+    {
+        $form = $this->createForm(AddToCartType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = $form->getData();
+            $item->setProduct($product);
+
+            $cart = $cartManager->getCurrentCart();
+            $cart
+                ->addItem($item)
+                ->setUpdatedAt(new \DateTime());
+            
+            $cartManager->save($cart);
+
+            return $this->redirectToRoute('product_detail', ['id' => $product->getId()]);
+        }
+
+        return $this->render('product/detail.html.twig', [
+            'product' => $product,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/product/{id}/edit", name="product_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Product $product): Response
     {
@@ -126,7 +154,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="product_delete", methods={"DELETE"})
+     * @Route("/admin/product/{id}", name="product_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Product $product): Response
     {
