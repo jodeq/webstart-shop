@@ -13,6 +13,7 @@
                     <div class="card-header bg-dark text-white d-flex">
                         <h5>Articles</h5>
                         <div class="ml-auto">
+                            {{ form_row(form._token) }}
                             {{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
                             {{ form_widget(form.clear, {'attr': {'class': 'btn btn-light'}}) }}
                         </div>
@@ -41,7 +42,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-fill mr-2 text-right">
-                                    <b>{{ item.vars.data.product.price }} €</b>
+                                    <b>{{ item.vars.data.product.price / 100 }} €</b>
                                 </div>
                             </li>
                         {% endfor %}
@@ -50,7 +51,18 @@
             </div>
             <!-- Summary -->
             <div class="col-md-4">
-
+                <div class="card mt-4 mt-md-0">
+                    <h5 class="card-header bg-dark text-white">Résumé</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div><b>Total</b></div>
+                            <span><b>{{ cart.total / 100 }} €</b></span>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="#" class="btn btn-warning w-100">Commander</a>
+                    </div>
+                </div>
             </div>
         </div>
     {% else %}

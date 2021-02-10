@@ -92,6 +92,6 @@ class OrderItem
 
     public function getTotal(): float
     {
-        return ($this->getProduct()->getPrice() * $this->getQuantity()) / 100;
+        return ($this->getProduct()->getPrice() * $this->getQuantity());
     }
 }
