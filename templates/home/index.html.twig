@@ -13,8 +13,8 @@
                 <div class="card-text">{{ product.description|raw }}</div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col">{{ product.price / 100 }} €</div>
-                        <div class="col"><a href="{{ path("product_detail", {id: product.id} ) }}">Voir le produit</a></div>
+                        <div class="col"><span><h5>{{ product.price / 100 }}</h5></span></div>
+                        <div class="col"><a class="btn btn-dark" href="{{ path("product_detail", {id: product.id} ) }}">Voir le produit</a></div>
                         <div class="col"><button class="btn btn-primary">Ajouter au panier</button></div>
                     </div>
                 </div>
